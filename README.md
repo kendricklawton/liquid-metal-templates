@@ -1,81 +1,46 @@
-# liquid-metal-templates
+# Kendrick Lawton - homebrew-tap
 
-Starter templates for building services on the [Liquid Metal](https://github.com/kendricklawton/liquid-metal) platform — stateless WAGI handlers compiled to WebAssembly and deployed with `flux deploy`.
+The official Homebrew repository for **Kendrick Lawton (@k-henry)**. This tap serves as the centralized distribution point for **[Liquid Metal](https://liquidmetal.dev)** and other projects developed along the way.
 
-## Structure
+## Installation
 
-```
-liquid-metal-templates/
-├── go/
-│   ├── liquid/               # Templates targeting the Liquid engine
-│   │   ├── markdown-renderer/
-│   │   └── webhook-router/
-│   └── metal/                # Templates targeting the Metal engine (coming soon)
-├── rust/                     # Coming soon
-└── zig/                      # Coming soon
-```
+You can install tools directly from this tap using their fully qualified names:
 
-## Templates
-
-### Go / Liquid
-
-#### `markdown-renderer`
-
-A stateless WAGI handler that converts Markdown to HTML.
-
-- **GET** `/` — serves a live-preview editor (HTMX-powered)
-- **POST** `/` — accepts a Markdown body and returns rendered HTML
-- Uses [goldmark](https://github.com/yuin/goldmark) with GFM extensions (tables, strikethrough, task lists, footnotes)
+```bash
+brew install kendricklawton/tap/flux
 
 ```
-go/liquid/markdown-renderer/
-├── main.go
-├── go.mod
-└── liquid-metal.toml
+
+For a better experience, add the tap to your local Homebrew installation to access all current and future formulae by their short names:
+
+```bash
+# Add the tap
+brew tap kendricklawton/tap
+
+# Install tools
+brew install flux
+
 ```
 
-**Build:**
-```sh
-GOOS=wasip1 GOARCH=wasm go build -o main.wasm .
-```
+## Available Formulae
 
-**Deploy:**
-```sh
-flux deploy
-```
+This registry tracks the stable releases of the Liquid Metal ecosystem and standalone utilities developed for Arch Linux, Firecracker, and Wasm environments.
+
+| Formula | Description |
+| --- | --- |
+| **`flux`** | **The Liquid Metal CLI** — The primary interface for shipping Firecracker microVMs and Wasm modules. |
+| **`tba`** | *Upcoming projects, including custom eBPF monitors and specialized dev-tooling, will be indexed here.* |
 
 ---
 
-#### `webhook-router`
+## Architecture & Integration
 
-A stateless WAGI handler that receives GitHub webhook events and transforms them into Slack-formatted messages.
+All formulae in this tap are cross-compiled for **macOS (Intel/Apple Silicon)** and **Linux (amd64/arm64)**.
 
-Supported events: `ping`, `push`, `pull_request`, `issues`
+* **Automation**: Managed via GoReleaser.
+* **Security**: Binaries are checksummed and verified against the `checksums.txt` provided in the GitHub Releases of the source repositories.
+* **Updates**: To ensure you are running the latest version of any tool in this tap:
+```bash
+brew update && brew upgrade <formula>
 
 ```
-go/liquid/webhook-router/
-├── main.go
-├── go.mod
-└── liquid-metal.toml
-```
-
-**Build:**
-```sh
-GOOS=wasip1 GOARCH=wasm go build -o main.wasm .
-```
-
-**Deploy:**
-```sh
-flux deploy
-```
-
-## How it works
-
-Each template is a self-contained Go module that compiles to a `.wasm` binary targeting `GOOS=wasip1 GOARCH=wasm`. The binary is served by the Liquid engine using the [WAGI](https://github.com/deislabs/wagi) protocol — HTTP request metadata arrives as environment variables and stdin; the response is written to stdout.
-
-A `liquid-metal.toml` file at the root of each template configures the service name, target engine, and build command.
-
-## Requirements
-
-- Go 1.23+
-- Liquid Metal CLI (`flux`)
