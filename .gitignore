@@ -1,0 +1,15 @@
+# compiled artifacts — users build locally via flux deploy
+*.wasm
+
+# Go
+go/*/vendor/
+
+# Rust
+rust/*/target/
+
+# Zig
+zig/*/.zig-cache/
+zig/*/zig-out/
+
+# macOS
+.DS_Store
